@@ -8,7 +8,7 @@ export default function Home() {
         <p className="text-2xl">
           A simple notes app built with Next.js and Tailwind CSS.
         </p>
-        <Link href={"/drag"} className="text-[100px] bg-red-500 p-10 rounded-lg">Go to notes Todo app</Link>
+        <Link href={"/dragNdrop"} className="text-[100px] bg-red-500 p-10 rounded-lg">Go to notes Todo app</Link>
       </main>
     </div>
   );
