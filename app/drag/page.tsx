@@ -1,11 +1,11 @@
-'use client'
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import {
   DndContext,
   useDraggable,
   useDroppable,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 
 interface DraggableProps {
   id: string;
@@ -18,12 +18,12 @@ function Draggable({ id, children }: DraggableProps) {
     transform: transform
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
-    cursor: 'grab',
-    padding: '8px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    background: '#f0f0f0',
-    margin: '8px',
+    cursor: "grab",
+    padding: "8px",
+    border: "10px solid #ccc",
+    borderRadius: "10px",
+    background: "black",
+    margin: "8px",
   };
 
   return (
@@ -41,51 +41,76 @@ interface DroppableProps {
 function Droppable({ id, children }: DroppableProps) {
   const { setNodeRef, isOver } = useDroppable({ id });
   const style: React.CSSProperties = {
-    border: isOver ? '2px dashed #4caf50' : '2px dashed #ccc',
-    padding: '16px',
-    borderRadius: '4px',
-    background: isOver ? '#e8f5e9' : '#fff',
-    minHeight: '100px',
-    textAlign: 'center',
+    border: isOver ? "2px dashed #4caf50" : "2px dashed #ccc",
+    padding: "16px",
+    borderRadius: "4px",
+    background: isOver ? "#e8f5e9" : "#fff",
+    minHeight: "100px",
+    textAlign: "center",
   };
 
   return (
     <div ref={setNodeRef} style={style}>
-              {children}
+      {children}
     </div>
   );
 }
 
 export default function DragDrop() {
-  const [draggableItems, setDraggableItems] = useState<string[]>([
-    'item-1',
-    'item-2',
-    'item-3',
-  ]);
+  const [newItem, setNewItem] = useState<string>("");
+  const [draggableItems, setDraggableItems] = useState<string[]>([]);
   const [droppedItems, setDroppedItems] = useState<string[]>([]);
+  console.log(newItem);
+
+  function addItem() {
+    if (!newItem) return;
+    setDraggableItems([...draggableItems, newItem]);
+    setNewItem("");
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
 
     if (!over) return;
 
-    if (over.id === 'dropzone') {
+    if (over.id === "dropzone" && draggableItems.includes(String(active.id))) {
       // Move item from draggableItems to droppedItems
       setDraggableItems((items) => items.filter((item) => item !== active.id));
-      setDroppedItems((items) => [...items, active.id]);
-    } else if (over.id === 'draggable-list') {
-      // Remove item from droppedItems and add back to draggableItems
+      setDroppedItems((items: any) => [...items, active.id]);
+    } else if (
+      over.id === "draggable-list" &&
+      droppedItems.includes(String(active.id))
+    ) {
+      // Move item from droppedItems back to draggableItems
       setDroppedItems((items) => items.filter((item) => item !== active.id));
-      setDraggableItems((items) => [...items, active.id]);
+      setDraggableItems((items: any) => [...items, active.id]);
     }
   };
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div style={{ display: 'flex', justifyContent: 'space-around', margin: '20px' }}>
-        {/* Draggable Items List */}
+      <div className="flex flex-col gap-4 items-center justify-center mt-12">
+        <input
+          type="text"
+          placeholder="Add a new item"
+          className="text-red-600 text-[30px] h-[100px] w-[300px] rounded-md p-10"
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+        />
+        <button onClick={addItem} className=" bg-red-500 p-2 rounded-md">
+          Add
+        </button>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          margin: "20px",
+        }}
+      >
         <Droppable id="draggable-list">
-          <h3>Draggable Items</h3>
+          <h3 className="text-red-700 text-2xl">Draggable Items</h3>
           {draggableItems.map((item) => (
             <Draggable key={item} id={item}>
               {item}
@@ -95,7 +120,7 @@ export default function DragDrop() {
 
         {/* Droppable Zone */}
         <Droppable id="dropzone">
-          <h3>Drop Here</h3>
+          <h3 className="text-red-700 text-2xl">Drop Here</h3>
           {droppedItems.map((item) => (
             <Draggable key={item} id={item}>
               {item}
@@ -106,5 +131,3 @@ export default function DragDrop() {
     </DndContext>
   );
 }
-
-     
