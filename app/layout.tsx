@@ -4,12 +4,12 @@ import "./globals.css";
 import Navbar from "./navbar/page";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
+  variable: "--font-geist-sans", // Define the CSS variable
   subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+  variable: "--font-geist-mono", // Define the CSS variable
   subsets: ["latin"],
 });
 
@@ -24,9 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-      >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>
         <Navbar />
         {children}
       </body>
